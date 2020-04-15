@@ -46,10 +46,9 @@ export function register(id)
     {
         state = +options.value;
         img.src = state ? imgOn : imgOff;
-    }
+    };
 
     jeedom.cmd.update[id]({ value: state });
-    img.src = state ? imgOn : imgOff;
     img.addEventListener('click', async function ()
     {
         var id = await getAction(!state);
