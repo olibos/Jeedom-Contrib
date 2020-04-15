@@ -7,7 +7,6 @@ export function register(id)
 {
     const widget = document.querySelector(`[data-cmd_id="${id}"]`)
     let { imgOn, imgOff, idOn, idOff, state, eqlogic_id: eqlogicId } = { ...defaultSettings, ...widget.dataset };
-    let actions;
     function getAction(action)
     {
         if (action && is_numeric(idOn))
@@ -22,21 +21,16 @@ export function register(id)
         {
             return new Promise(success =>
             {
-                function result(r)
+                jeedom.eqLogic.getCmd(
                 {
-                    actions = r;
-                    let result = r.find(a => jeedom.cmd.normalizeName(a.name) === (action ? 'on' : 'off'));
-                    success(result && result.id);
-                }
-
-                if (actions)
-                {
-                    result(actions);
-                }
-                else
-                {
-                    jeedom.eqLogic.getCmd({ id: +eqlogicId, success: result });
-                }
+                    id: +eqlogicId, 
+                    success(actions)
+                    {
+                        idOn = actions.find(a => jeedom.cmd.normalizeName(a.name) === 'on')?.id;
+                        idOff = actions.find(a => jeedom.cmd.normalizeName(a.name) === 'off')?.id;
+                        success(action ? idOn : idOff);
+                    }
+                });
             });
         }
     }
